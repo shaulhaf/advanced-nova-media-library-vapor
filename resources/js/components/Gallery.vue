@@ -106,16 +106,55 @@
         this.images[index] = Object.assign(image, { custom_properties: this.cropImage.custom_properties });
       },
 
-      add() {
+      async add() {
         Array.from(this.$refs.file.files).forEach(file => {
-          const blobFile = new Blob([file], { type: file.type });
-          blobFile.lastModifiedDate = new Date();
-          blobFile.name = file.name;
-          this.readFile(blobFile);
+          let length = this.value.push({
+            __media_urls__: {
+              __original__: '',
+              default: '',
+            },
+            name: file.name,
+            file_name: file.name,
+            mime_type: file.type,
+            uploadProgress: 0,
+          })
+
+          let image = this.value[length-1]
+
+          this.store(file, {
+            progress: progress => {
+                image.uploadProgress = Math.round(progress * 100);
+            }
+          }).then(response => {
+              this.createImage(response, file).then(response => {
+                let url = response.data.url;
+                let db_image = response.data.media
+
+                var vm = this;
+                Object.keys(db_image).forEach(key => {
+                  vm.$set(image, key, db_image[key])
+                });
+                this.$set(image,'__media_urls__', {
+                  __original__ : url,
+                  preview: url,
+                })
+
+              })
+            }).catch(e => {
+            }); 
         });
 
         // reset file input so if you upload the same image sequentially
         this.$refs.file.value = null;
+      },
+      createImage(response, file){
+        return axios.post('/nova-api/createImage', {
+                url: response.key,
+                name: file.name,
+                type: file.type,
+                size: file.size,
+                collection_name: this.field.attribute
+            })
       },
       readFile(file) {
         let reader = new FileReader();
@@ -193,6 +232,37 @@
         ));
         return false;
       },
+      async store(file, options = {}) {
+            const response = await axios.post('/nova-api/signed-storage-url', {
+                'bucket': options.bucket || '',
+                'content_type': options.contentType || file.type,
+                'expires': options.expires || '',
+                'visibility': options.visibility || '',
+            }, {
+                baseURL: options.baseURL || null
+            });
+
+            let headers = response.data.headers;
+
+            if ('Host' in headers) {
+                delete headers.Host;
+            }
+
+            if (typeof options.progress === 'undefined') {
+                options.progress = () => {};
+            }
+
+            await axios.put(response.data.url, file, {
+                headers: headers,
+                onUploadProgress: (progressEvent) => {
+                    options.progress(progressEvent.loaded / progressEvent.total);
+                }
+            });
+
+            response.data.extension = file.name.split('.').pop()
+
+            return response.data;
+        },
     },
     mounted: function () {
       this.$nextTick(() => {

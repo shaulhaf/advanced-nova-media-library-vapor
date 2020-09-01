@@ -29,6 +29,11 @@ trait HandlesExistingMediaTrait
             })->map(function ($model_id, int $index) use ($request, $model, $collection) {
                 $mediaClass = config('media-library.media_model');
                 $existingMedia = $mediaClass::find($model_id);
+                $existingMedia->update([
+                    'model_type' => get_class($model),
+                    'model_id' => $model->id,
+                ]);
+                return $existingMedia->getKey();
 
                 // Mimic copy behaviour
                 // See Spatie\MediaLibrary\Models\Media->copy()

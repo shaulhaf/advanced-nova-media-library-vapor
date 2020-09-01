@@ -17,7 +17,20 @@
         <scissors-icon brand="var(--info)" view-box="0 0 20 20" width="16" height="16"/>
       </a>
     </div>
-    <img :src="src" :alt="image.name" ref="image" class="gallery-image">
+    <svg class="progress-ring" width="120" height="120" v-if="image.uploadProgress < 100 || !src">
+      <circle
+        ref="circle"
+        class="progress-ring__circle"
+        stroke="var(--primary-dark)"
+        stroke-width="4"
+        fill="transparent"
+        r="52"
+        cx="60"
+        cy="60"
+        :style="'stroke-dasharray:' + circumference + ', ' + circumference + ';stroke-dashoffset: '+ offset +';'"
+        />
+    </svg>
+    <img v-else :src="src" :alt="image.name" ref="image" class="gallery-image">
     <div v-if="field.showStatistics" class="statistics">
       <div v-if="size" class="size"><strong>{{ size }}</strong></div>
       <div class="dimensions"><strong>{{ width }}×{{ height }}</strong> px</div>
@@ -34,6 +47,12 @@
   import GalleryItem from './GalleryItem';
 
   export default {
+    mounted() {
+      if (this.$refs.circle) {
+        this.circumference =  this.$refs.circle.r.baseVal.value * 2 * Math.PI
+        this.offset  = this.circumference - 1
+      }
+    },
     components: {
       ScissorsIcon,
       GalleryItem,
@@ -47,6 +66,9 @@
       aspectRatio: undefined,
       ratio: undefined,
       size: undefined,
+      // uploadProgress: 0,
+      circumference: 0,
+      offset: 0,
     }),
     computed: {
       downloadUrl() {
@@ -65,7 +87,10 @@
       image: {
         handler: 'getImage',
         immediate: true
-      }
+      },
+      "image.uploadProgress" (uploadProgress) {
+        this.offset = this.circumference - uploadProgress / 100 * this.circumference
+      },
     },
     methods: {
       showPreview() {
@@ -169,7 +194,22 @@
   };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+    .circle_wrapper {
+      width: 100px; /* Set the size of the progress bar */
+      height: 100px;
+      position: absolute; /* Enable clipping */
+      clip: rect(0px, 100px, 100px, 50px); /* Hide half of the progress bar */
+    }
+    /* Set the sizes of the elements that make up the progress bar */
+    .circle {
+      width: 80px;
+      height: 80px;
+      border: 10px solid green;
+      border-radius: 50px;
+      position: absolute;
+      clip: rect(0px, 50px, 100px, 0px);
+    }
   $bg-color: #e8f5fb;
   $item-max-size: 150px;
   $border-radius: 10px;
@@ -268,4 +308,21 @@
       left: 10px;
     }
   }
+  .progress-ring {
+  
+}
+
+.progress-ring__circle {
+  transition: 0.35s stroke-dashoffset;
+  // axis compensation
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+input {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  width: 80px;
+}
 </style>
