@@ -14,7 +14,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Ebess\\AdvancedNovaMediaLibrary\\": "src/"
+            "Ebess\\AdvancedNovaMediaLibrary\\": "src/",
+            "ShaulHaf\\": "src/"
         }
     },
     "extra": {
