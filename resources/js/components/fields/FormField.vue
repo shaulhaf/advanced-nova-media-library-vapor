@@ -68,6 +68,7 @@
        * Fill the given FormData object with the field's internal value.
        */
       fill(formData) {
+        if(this.field.readonly) {return;}
         const field = this.field.attribute;
         this.value.forEach((file, index) => {
           const isNewImage = !file.id;
