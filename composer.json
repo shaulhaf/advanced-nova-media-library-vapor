@@ -14,14 +14,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Ebess\\AdvancedNovaMediaLibrary\\": "src/",
-            "ShaulHaf\\": "src/"
+            "ShaulHaf\\AdvancedNovaMediaLibrary\\": "src/",
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Ebess\\AdvancedNovaMediaLibrary\\AdvancedNovaMediaLibraryServiceProvider"
+                "ShaulHaf\\AdvancedNovaMediaLibrary\\AdvancedNovaMediaLibraryServiceProvider"
             ]
         }
     },

@@ -132,7 +132,7 @@
       createRequest () {
         return Nova.request()
           .get(
-            `/nova-vendor/ebess/advanced-nova-media-library/media`,
+            `/nova-vendor/shaulhaf/advanced-nova-media-library/media`,
             {
               params: this.requestParams
             }

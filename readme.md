@@ -18,15 +18,15 @@ images and order them by drag and drop.
 * [Media Field (Video)](#media-field-video)  
 
 ## Examples
-![Cropping](https://raw.githubusercontent.com/ebess/advanced-nova-media-library/master/docs/cropping.gif)
-![Single image upload](https://raw.githubusercontent.com/ebess/advanced-nova-media-library/master/docs/single-image.png)
-![Multiple image upload](https://raw.githubusercontent.com/ebess/advanced-nova-media-library/master/docs/multiple-images.png)
-![Custom properties](https://raw.githubusercontent.com/ebess/advanced-nova-media-library/master/docs/custom-properties.gif)
-![Generic file management](https://raw.githubusercontent.com/ebess/advanced-nova-media-library/master/docs/file-management.png)
+![Cropping](https://raw.githubusercontent.com/ShaulHaf/advanced-nova-media-library/master/docs/cropping.gif)
+![Single image upload](https://raw.githubusercontent.com/ShaulHaf/advanced-nova-media-library/master/docs/single-image.png)
+![Multiple image upload](https://raw.githubusercontent.com/ShaulHaf/advanced-nova-media-library/master/docs/multiple-images.png)
+![Custom properties](https://raw.githubusercontent.com/ShaulHaf/advanced-nova-media-library/master/docs/custom-properties.gif)
+![Generic file management](https://raw.githubusercontent.com/ShaulHaf/advanced-nova-media-library/master/docs/file-management.png)
 
 ## Install
 ```bash
-composer require ebess/advanced-nova-media-library
+composer require ShaulHaf/advanced-nova-media-library
 ```
 
 ```bash
@@ -55,12 +55,12 @@ public function registerMediaCollections()
 
 ## Generic file management
 
-![Generic file management](https://raw.githubusercontent.com/ebess/advanced-nova-media-library/master/docs/file-management.png)
+![Generic file management](https://raw.githubusercontent.com/ShaulHaf/advanced-nova-media-library/master/docs/file-management.png)
 
 In order to be able to upload and handle generic files just go ahead and use the `Files` field.
 
 ```php
-use Ebess\AdvancedNovaMediaLibrary\Fields\Files;
+use ShaulHaf\AdvancedNovaMediaLibrary\Fields\Files;
 
 Files::make('Single file', 'one_file'),
 Files::make('Multiple files', 'multiple_files'),
@@ -68,10 +68,10 @@ Files::make('Multiple files', 'multiple_files'),
 
 ## Single image upload
 
-![Single image upload](https://raw.githubusercontent.com/ebess/advanced-nova-media-library/master/docs/single-image.png)
+![Single image upload](https://raw.githubusercontent.com/ShaulHaf/advanced-nova-media-library/master/docs/single-image.png)
 
 ```php
-use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
+use ShaulHaf\AdvancedNovaMediaLibrary\Fields\Images;
 
 public function fields(Request $request)
 {
@@ -87,10 +87,10 @@ public function fields(Request $request)
 
 If you enable the multiple upload ability, you can **order the images via drag & drop**.
 
-![Multiple image upload](https://raw.githubusercontent.com/ebess/advanced-nova-media-library/master/docs/multiple-images.png)
+![Multiple image upload](https://raw.githubusercontent.com/ShaulHaf/advanced-nova-media-library/master/docs/multiple-images.png)
 
 ```php
-use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
+use ShaulHaf\AdvancedNovaMediaLibrary\Fields\Images;
 
 public function fields(Request $request)
 {
@@ -110,8 +110,8 @@ public function fields(Request $request)
 
 ## Selecting existing media
 
-![Selecting existing media](https://raw.githubusercontent.com/ebess/advanced-nova-media-library/master/docs/existing-media.png)
-![Selecting existing media 2](https://raw.githubusercontent.com/ebess/advanced-nova-media-library/master/docs/existing-media-2.png)
+![Selecting existing media](https://raw.githubusercontent.com/ShaulHaf/advanced-nova-media-library/master/docs/existing-media.png)
+![Selecting existing media 2](https://raw.githubusercontent.com/ShaulHaf/advanced-nova-media-library/master/docs/existing-media-2.png)
 
 If you upload the same media files to multiple models and you do not want to select it from the file system
 all over again, use this feature. Selecting an already existing media will **copy it**.
@@ -173,7 +173,7 @@ Images::make('Image 1', 'img1')
 
 ## Image cropping
 
-![Cropping](https://raw.githubusercontent.com/ebess/advanced-nova-media-library/master/docs/cropping.gif)
+![Cropping](https://raw.githubusercontent.com/ShaulHaf/advanced-nova-media-library/master/docs/cropping.gif)
 
 By default you are able to crop / rotate images by clicking the scissors in the left bottom corner on the edit view. 
 The [vue-js-clipper](https://github.com/timtnleeProject/vuejs-clipper) is used for this purpose. The cropping feature is 
@@ -195,7 +195,7 @@ Available cropping configuration, see https://github.com/timtnleeProject/vuejs-c
 
 ## Custom properties
 
-![Custom properties](https://raw.githubusercontent.com/ebess/advanced-nova-media-library/master/docs/custom-properties.gif)
+![Custom properties](https://raw.githubusercontent.com/ShaulHaf/advanced-nova-media-library/master/docs/custom-properties.gif)
 
 ```php
 Images::make('Gallery')
@@ -220,7 +220,7 @@ Files::make('Multiple files', 'multiple_files')
 
 ## Show image statistics *(size, dimensions, type)*
 
-![Image statistics](https://raw.githubusercontent.com/ebess/advanced-nova-media-library/master/docs/show-statistics.png)
+![Image statistics](https://raw.githubusercontent.com/ShaulHaf/advanced-nova-media-library/master/docs/show-statistics.png)
 
 ```php
 Images::make('Gallery')
@@ -241,7 +241,7 @@ Images::make('Gallery')
 In order to handle videos with thumbnails you need to use the `Media` field instead of `Images`. This way you are able to upload videos as well.
 
 ```php
-use Ebess\AdvancedNovaMediaLibrary\Fields\Media;
+use ShaulHaf\AdvancedNovaMediaLibrary\Fields\Media;
 
 class Category extends Resource
 {

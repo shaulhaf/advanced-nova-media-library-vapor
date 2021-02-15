@@ -1,7 +1,7 @@
 <?php
 
-namespace ShaulHafner;
+namespace ShaulHaf;
 
-class VaporImages extends \Ebess\AdvancedNovaMediaLibrary\Fields\Images
+class VaporImages extends \ShaulHaf\AdvancedNovaMediaLibrary\Fields\Images
 {
 }

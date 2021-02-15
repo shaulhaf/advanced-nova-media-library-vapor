@@ -1,6 +1,6 @@
 <?php
 
-namespace Ebess\AdvancedNovaMediaLibrary\Fields;
+namespace ShaulHaf\AdvancedNovaMediaLibrary\Fields;
 
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Support\Collection;

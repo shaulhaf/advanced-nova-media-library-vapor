@@ -1,9 +1,9 @@
 <?php
 
-namespace Ebess\AdvancedNovaMediaLibrary\Http\Controllers;
+namespace ShaulHaf\AdvancedNovaMediaLibrary\Http\Controllers;
 
-use Ebess\AdvancedNovaMediaLibrary\Http\Requests\MediaRequest;
-use Ebess\AdvancedNovaMediaLibrary\Http\Resources\MediaResource;
+use ShaulHaf\AdvancedNovaMediaLibrary\Http\Requests\MediaRequest;
+use ShaulHaf\AdvancedNovaMediaLibrary\Http\Resources\MediaResource;
 use Exception;
 
 class MediaController extends Controller
