@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "ShaulHaf\\AdvancedNovaMediaLibrary\\": "src/",
+            "ShaulHaf\\AdvancedNovaMediaLibrary\\": "src/"
         }
     },
     "extra": {
