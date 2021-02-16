@@ -148,12 +148,14 @@
         this.$refs.file.value = null;
       },
       createImage(response, file){
-        return axios.post('/nova-api/createImage', {
+        return axios.post('/nova-vendor/shaulhaf/advanced-nova-media-library/createImage', {
                 url: response.key,
                 name: file.name,
                 type: file.type,
                 size: file.size,
-                collection_name: this.field.attribute
+                collection_name: this.field.attribute,
+                class: this.$route.params.resourceName,
+                disk: this.field.disk,
             })
       },
       readFile(file) {
@@ -233,11 +235,9 @@
         return false;
       },
       async store(file, options = {}) {
-            const response = await axios.post('/nova-api/signed-storage-url', {
-                'bucket': options.bucket || '',
+            const response = await axios.post('/nova-vendor/shaulhaf/advanced-nova-media-library/signed-storage-url', {
                 'content_type': options.contentType || file.type,
-                'expires': options.expires || '',
-                'visibility': options.visibility || '',
+                'disk': this.field.disk, 
             }, {
                 baseURL: options.baseURL || null
             });
