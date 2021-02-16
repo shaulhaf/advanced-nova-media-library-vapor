@@ -25,7 +25,10 @@ trait HandlesExistingMediaTrait
 
         return collect($data)
             ->filter(function ($value) use ($addedMediaIds) {
-                return (! ($value instanceof UploadedFile)) && ! (in_array((int) $value, $addedMediaIds));
+                return
+                    (! ($value instanceof UploadedFile))
+                    // && ! (in_array((int) $value, $addedMediaIds + [0]))
+                ;
             })->map(function ($model_id, int $index) use ($request, $model, $collection) {
                 $mediaClass = config('media-library.media_model');
                 $existingMedia = $mediaClass::find($model_id);
