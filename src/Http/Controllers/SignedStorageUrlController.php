@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace ShaulHaf\AdvancedNovaMediaLibrary\Http\Controllers;
 
 use Storage;
 use Aws\S3\S3Client;
@@ -15,7 +15,8 @@ class SignedStorageUrlController extends Controller
     public $disk;
     public $disk_name;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->disk_name = request()->disk ?? config('media-library.disk_name');
         $this->disk = config('filesystems.disks.' . $this->disk_name);
     }
@@ -44,7 +45,7 @@ class SignedStorageUrlController extends Controller
             'uuid' => $uuid,
             'bucket' => $bucket,
             'key' => $key,
-            'url' => 'https://'.$uri->getHost().$uri->getPath().'?'.$uri->getQuery(),
+            'url' => 'https://' . $uri->getHost() . $uri->getPath() . '?' . $uri->getQuery(),
             'headers' => $this->headers($request, $signedRequest),
         ], 201);
     }
@@ -95,7 +96,7 @@ class SignedStorageUrlController extends Controller
         }
 
         throw new InvalidArgumentException(
-            "Unable to issue signed URL. Missing environment variables: ".implode(', ', array_keys($missing))
+            "Unable to issue signed URL. Missing environment variables: " . implode(', ', array_keys($missing))
         );
     }
 
@@ -112,8 +113,8 @@ class SignedStorageUrlController extends Controller
             'signature_version' => 'v4',
             'endpoint' => $this->disk['endpoint'] . '/' .  $this->disk['region'] . data_get($this->disk, 'root'),
             'credentials' => [
-                'key'    => env('DIGITALOCEAN_SPACES_KEY'),
-                'secret' => env('DIGITALOCEAN_SPACES_SECRET'),
+                'key'    => $this->disk['key'],
+                'secret' => $this->disk['secret'],
             ],
         ];
 
@@ -166,6 +167,7 @@ class SignedStorageUrlController extends Controller
 
         Artisan::call('media-library:regenerate', [
             '--ids' => $media->id,
+            '--force' => true,
         ]);
 
         return [
