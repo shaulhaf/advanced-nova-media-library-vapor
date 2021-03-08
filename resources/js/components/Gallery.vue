@@ -1,16 +1,40 @@
 <template>
-  <div class="gallery" :class="{editable}" @mouseover="mouseOver = true" @mouseout="mouseOver = false">
-    <cropper v-if="field.type === 'media' && editable" :image="cropImage" @close="cropImage = null" @crop-completed="onCroppedImage" :configs="field.croppingConfigs"/>
+  <div
+    class="gallery"
+    :class="{ editable }"
+    @mouseover="mouseOver = true"
+    @mouseout="mouseOver = false"
+  >
+    <cropper
+      v-if="field.type === 'media' && editable"
+      :image="cropImage"
+      @close="cropImage = null"
+      @crop-completed="onCroppedImage"
+      :configs="field.croppingConfigs"
+    />
 
-    <component :is="draggable ? 'draggable' : 'div'" v-if="images.length > 0" v-model="images"
-               class="gallery-list clearfix">
-
-      <component :is="singleComponent" v-for="(image, index) in images" class="mb-3 p-3 mr-3"
-                    :key="index" :image="image" :field="field" :editable="editable" :removable="removable || editable" @remove="remove(index)"
-                    :is-custom-properties-editable="customProperties && customPropertiesFields.length > 0"
-                    @edit-custom-properties="customPropertiesImageIndex = index"
-                    @crop-start="cropImage = $event"
-                    />
+    <component
+      :is="draggable ? 'draggable' : 'div'"
+      v-if="images.length > 0"
+      v-model="images"
+      class="gallery-list clearfix"
+    >
+      <component
+        :is="singleComponent"
+        v-for="(image, index) in images"
+        class="mb-3 p-3 mr-3"
+        :key="index"
+        :image="image"
+        :field="field"
+        :editable="editable"
+        :removable="removable || editable"
+        @remove="remove(index)"
+        :is-custom-properties-editable="
+          customProperties && customPropertiesFields.length > 0
+        "
+        @edit-custom-properties="customPropertiesImageIndex = index"
+        @crop-start="cropImage = $event"
+      />
 
       <CustomProperties
         v-if="customPropertiesImageIndex !== null"
@@ -18,14 +42,24 @@
         :fields="customPropertiesFields"
         @close="customPropertiesImageIndex = null"
       />
-
     </component>
 
     <span v-else-if="!editable" class="mr-3">&mdash;</span>
 
     <span v-if="editable" class="form-file">
-      <input :id="`__media__${field.attribute}`" :multiple="multiple" ref="file" class="form-file-input" type="file" @change="add"/>
-      <label :for="`__media__${field.attribute}`" class="form-file-btn btn btn-default btn-primary" v-text="label"/>
+      <input
+        :id="`__media__${field.attribute}`"
+        :multiple="multiple"
+        ref="file"
+        class="form-file-input"
+        type="file"
+        @change="add"
+      />
+      <label
+        :for="`__media__${field.attribute}`"
+        class="form-file-btn btn btn-default btn-primary"
+        v-text="label"
+      />
     </span>
 
     <p v-if="hasError" class="my-2 text-danger">
@@ -35,258 +69,274 @@
 </template>
 
 <script>
-  import SingleMedia from './SingleMedia';
-  import SingleFile from './SingleFile';
-  import Cropper from './Cropper';
-  import CustomProperties from './CustomProperties';
-  import Draggable from 'vuedraggable';
+import SingleMedia from "./SingleMedia";
+import SingleFile from "./SingleFile";
+import Cropper from "./Cropper";
+import CustomProperties from "./CustomProperties";
+import Draggable from "vuedraggable";
 
-  export default {
-    components: {
-      Draggable,
-      SingleMedia,
-      SingleFile,
-      CustomProperties,
-      Cropper,
+export default {
+  components: {
+    Draggable,
+    SingleMedia,
+    SingleFile,
+    CustomProperties,
+    Cropper,
+  },
+  props: {
+    hasError: Boolean,
+    firstError: String,
+    field: Object,
+    value: Array,
+    editable: Boolean,
+    removable: Boolean,
+    multiple: Boolean,
+    customProperties: {
+      type: Boolean,
+      default: false,
     },
-    props: {
-      hasError: Boolean,
-      firstError: String,
-      field: Object,
-      value: Array,
-      editable: Boolean,
-      removable: Boolean,
-      multiple: Boolean,
-      customProperties: {
-        type: Boolean,
-        default: false,
-      },
+  },
+  data() {
+    return {
+      mouseOver: false,
+      cropImage: null,
+      images: this.value,
+      customPropertiesImageIndex: null,
+      singleComponent: this.field.type === "media" ? SingleMedia : SingleFile,
+    };
+  },
+  computed: {
+    draggable() {
+      return this.editable && this.multiple;
     },
-    data() {
-      return {
-        mouseOver: false,
-        cropImage: null,
-        images: this.value,
-        customPropertiesImageIndex: null,
-        singleComponent: this.field.type === 'media' ? SingleMedia : SingleFile,
-      };
+    customPropertiesFields() {
+      return this.field.customPropertiesFields || [];
     },
-    computed: {
-      draggable() {
-        return this.editable && this.multiple;
-      },
-      customPropertiesFields() {
-        return this.field.customPropertiesFields || [];
-      },
-      label() {
-        const type = this.field.type === 'media' ? 'Media' : 'File';
+    label() {
+      const type = this.field.type === "media" ? "Media" : "File";
 
-        if (this.multiple || this.images.length === 0) {
-          return this.__(`Add New ${type}`);
-        }
-
-        return this.__(`Upload New ${type}`);
+      if (this.multiple || this.images.length === 0) {
+        return this.__(`Add New ${type}`);
       }
+
+      return this.__(`Upload New ${type}`);
     },
-    watch: {
-      images() {
-        this.$emit('input', this.images);
-      },
-      value(value) {
-        this.images = value;
-      },
+  },
+  watch: {
+    images() {
+      this.$emit("input", this.images);
     },
-    methods: {
-      remove(index) {
-        this.images = this.images.filter((value, i) => i !== index);
-      },
+    value(value) {
+      this.images = value;
+    },
+  },
+  methods: {
+    remove(index) {
+      this.images = this.images.filter((value, i) => i !== index);
+    },
 
-      onCroppedImage(image) {
-        let index = this.images.indexOf(this.cropImage);
-        this.images[index] = Object.assign(image, { custom_properties: this.cropImage.custom_properties });
-      },
+    onCroppedImage(image) {
+      let index = this.images.indexOf(this.cropImage);
+      this.images[index] = Object.assign(image, {
+        custom_properties: this.cropImage.custom_properties,
+      });
+    },
 
-      async add() {
-        Array.from(this.$refs.file.files).forEach(file => {
-          let length = this.value.push({
-            __media_urls__: {
-              __original__: '',
-              default: '',
-            },
-            name: file.name,
-            file_name: file.name,
-            mime_type: file.type,
-            uploadProgress: 0,
-          })
-
-          let image = this.value[length-1]
-
-          this.store(file, {
-            progress: progress => {
-                image.uploadProgress = Math.round(progress * 100);
-            }
-          }).then(response => {
-              this.createImage(response, file).then(response => {
-                let url = response.data.url;
-                let db_image = response.data.media
-
-                var vm = this;
-                Object.keys(db_image).forEach(key => {
-                  vm.$set(image, key, db_image[key])
-                });
-                this.$set(image,'__media_urls__', {
-                  __original__ : url,
-                  preview: url,
-                })
-
-              })
-            }).catch(e => {
-            }); 
+    async add() {
+      Array.from(this.$refs.file.files).forEach((file) => {
+        let length = this.value.push({
+          __media_urls__: {
+            __original__: "",
+            default: "",
+          },
+          name: file.name,
+          file_name: file.name,
+          mime_type: file.type,
+          uploadProgress: 0,
         });
 
-        // reset file input so if you upload the same image sequentially
-        this.$refs.file.value = null;
-      },
-      createImage(response, file){
-        return axios.post('/nova-vendor/shaulhaf/advanced-nova-media-library/createImage', {
-                url: response.key,
-                name: file.name,
-                type: file.type,
-                size: file.size,
-                collection_name: this.field.attribute,
-                class: this.$route.params.resourceName,
-                disk: this.field.disk,
-            })
-      },
-      readFile(file) {
-        let reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-          const fileData = {
-            file: file,
-            __media_urls__: {
-              __original__: reader.result,
-              default: reader.result,
-            },
-            name: file.name,
-            file_name: file.name,
-          };
+        let image = this.value[length - 1];
 
-          if (!this.validateFile(fileData.file)) {
-            return;
-          }
+        this.store(file, {
+          progress: (progress) => {
+            image.uploadProgress = Math.round(progress * 100);
+          },
+        })
+          .then((response) => {
+            this.createImage(response, file).then((response) => {
+              let url = response.data.url;
+              let db_image = response.data.media;
 
-          if (this.multiple) {
-            this.images.push(fileData);
-          } else {
-            this.images = [fileData];
-          }
+              var vm = this;
+              Object.keys(db_image).forEach((key) => {
+                vm.$set(image, key, db_image[key]);
+              });
+              this.$set(image, "__media_urls__", {
+                __original__: url,
+                preview: url,
+              });
+            });
+          })
+          .catch((e) => {});
+      });
+
+      // reset file input so if you upload the same image sequentially
+      this.$refs.file.value = null;
+    },
+    createImage(response, file) {
+      return axios.post(
+        "/nova-vendor/shaulhaf/advanced-nova-media-library/createImage",
+        {
+          url: response.key,
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          collection_name: this.field.attribute,
+          class: this.$route.params.resourceName,
+          disk: this.field.disk,
+          private: this.field.private,
+        }
+      );
+    },
+    readFile(file) {
+      let reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const fileData = {
+          file: file,
+          __media_urls__: {
+            __original__: reader.result,
+            default: reader.result,
+          },
+          name: file.name,
+          file_name: file.name,
         };
-      },
-      retrieveImageFromClipboardAsBlob(pasteEvent, callback) {
-        if (pasteEvent.clipboardData == false) {
-          if (typeof (callback) == "function") {
-            callback(undefined);
-          }
-        }
-        var items = pasteEvent.clipboardData.items
-        if (items == undefined) {
-          if (typeof (callback) == "function") {
-            callback(undefined)
-          }
-        }
-        for (var i = 0; i < items.length; i++) {
-          if (items[i].type.indexOf("image") == -1) continue;
-          var blob = items[i].getAsFile()
 
-          if (typeof (callback) == "function") {
-            callback(blob)
-          }
+        if (!this.validateFile(fileData.file)) {
+          return;
         }
-      },
-      validateFile(file) {
-        return this.validateFileSize(file) && this.validateFileType(file);
-      },
-      validateFileSize(file) {
-        if (this.field.maxFileSize && ((file.size / 1024) > this.field.maxFileSize)) {
-          this.$toasted.error(this.__(
-            'Maximum file size is :amount MB',
-            {amount: String(this.field.maxFileSize / 1024)}
-          ));
-          return false;
+
+        if (this.multiple) {
+          this.images.push(fileData);
+        } else {
+          this.images = [fileData];
         }
+      };
+    },
+    retrieveImageFromClipboardAsBlob(pasteEvent, callback) {
+      if (pasteEvent.clipboardData == false) {
+        if (typeof callback == "function") {
+          callback(undefined);
+        }
+      }
+      var items = pasteEvent.clipboardData.items;
+      if (items == undefined) {
+        if (typeof callback == "function") {
+          callback(undefined);
+        }
+      }
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf("image") == -1) continue;
+        var blob = items[i].getAsFile();
+
+        if (typeof callback == "function") {
+          callback(blob);
+        }
+      }
+    },
+    validateFile(file) {
+      return this.validateFileSize(file) && this.validateFileType(file);
+    },
+    validateFileSize(file) {
+      if (this.field.maxFileSize && file.size / 1024 > this.field.maxFileSize) {
+        this.$toasted.error(
+          this.__("Maximum file size is :amount MB", {
+            amount: String(this.field.maxFileSize / 1024),
+          })
+        );
+        return false;
+      }
+      return true;
+    },
+    validateFileType(file) {
+      if (!Array.isArray(this.field.allowedFileTypes)) {
         return true;
-      },
-      validateFileType(file) {
-        if (!Array.isArray(this.field.allowedFileTypes)) {
+      }
+
+      for (const type of this.field.allowedFileTypes) {
+        if (file.type.startsWith(type)) {
           return true;
         }
+      }
 
-        for (const type of this.field.allowedFileTypes) {
-          if (file.type.startsWith(type)) {
-            return true;
-          }
-        }
-
-        this.$toasted.error(this.__(
-          'File type must be: :types',
-          {types: this.field.allowedFileTypes.join(' / ')}
-        ));
-        return false;
-      },
-      async store(file, options = {}) {
-            const response = await axios.post('/nova-vendor/shaulhaf/advanced-nova-media-library/signed-storage-url', {
-                'content_type': options.contentType || file.type,
-                'disk': this.field.disk, 
-            }, {
-                baseURL: options.baseURL || null
-            });
-
-            let headers = response.data.headers;
-
-            if ('Host' in headers) {
-                delete headers.Host;
-            }
-
-            if (typeof options.progress === 'undefined') {
-                options.progress = () => {};
-            }
-
-            await axios.put(response.data.url, file, {
-                headers: headers,
-                onUploadProgress: (progressEvent) => {
-                    options.progress(progressEvent.loaded / progressEvent.total);
-                }
-            });
-
-            response.data.extension = file.name.split('.').pop()
-
-            return response.data;
-        },
+      this.$toasted.error(
+        this.__("File type must be: :types", {
+          types: this.field.allowedFileTypes.join(" / "),
+        })
+      );
+      return false;
     },
-    mounted: function () {
-      this.$nextTick(() => {
-        window.addEventListener("paste", (e) => {
+    async store(file, options = {}) {
+      const response = await axios.post(
+        "/nova-vendor/shaulhaf/advanced-nova-media-library/signed-storage-url",
+        {
+          content_type: options.contentType || file.type,
+          disk: this.field.disk,
+        },
+        {
+          baseURL: options.baseURL || null,
+        }
+      );
+
+      let headers = response.data.headers;
+
+      if ("Host" in headers) {
+        delete headers.Host;
+      }
+
+      if (typeof options.progress === "undefined") {
+        options.progress = () => {};
+      }
+
+      await axios.put(response.data.url, file, {
+        headers: headers,
+        onUploadProgress: (progressEvent) => {
+          options.progress(progressEvent.loaded / progressEvent.total);
+        },
+      });
+
+      response.data.extension = file.name.split(".").pop();
+
+      return response.data;
+    },
+  },
+  mounted: function () {
+    this.$nextTick(() => {
+      window.addEventListener(
+        "paste",
+        (e) => {
           if (!this.mouseOver) {
             return;
           }
           this.retrieveImageFromClipboardAsBlob(e, (imageBlob) => {
             if (imageBlob) {
-              this.readFile(imageBlob)
+              this.readFile(imageBlob);
             }
-          })
-        }, false)
-      })
-    },
-  };
+          });
+        },
+        false
+      );
+    });
+  },
+};
 </script>
 
 <style lang="scss">
-  .gallery {
-    &.editable {
-      .gallery-item {
-        cursor: grab;
-      }
+.gallery {
+  &.editable {
+    .gallery-item {
+      cursor: grab;
     }
   }
+}
 </style>

@@ -173,7 +173,7 @@ class SignedStorageUrlController extends Controller
         return [
             'media' => $media,
             'id' => $media->id,
-            'url' => $media->getTemporaryUrl(now()->addMinutes(5)),
+            'url' => $request->private ? $media->getTemporaryUrl(now()->addMinutes(5)) : $media->getUrl(),
         ];
     }
 }
