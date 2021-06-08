@@ -2,13 +2,13 @@
 
 namespace ShaulHaf\AdvancedNovaMediaLibrary\Http\Controllers;
 
-use Storage;
 use Aws\S3\S3Client;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Storage;
 
 class SignedStorageUrlController extends Controller
 {
@@ -144,19 +144,19 @@ class SignedStorageUrlController extends Controller
         $collection_name = $request->collection_name ?? '';
 
         $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::create([
-            'collection_name' => $collection_name,
             'name' => $name,
             'file_name' => $name,
-            'order_column' => $order_column,
-            'model_id' => $model_id,
-            'model_type' => $model_type,
-            'disk' => $this->disk_name,
-            'conversions_disk' => $this->disk_name,
-            'responsive_images' => [],
             'manipulations' => [],
-            'mime_type' => $request->type,
+            'model_id' => $model_id,
             'size' => $request->size,
-            'custom_properties' => [],
+            'responsive_images' => [],
+            'disk' => $this->disk_name,
+            'model_type' => $model_type,
+            'mime_type' => $request->type,
+            'order_column' => $order_column,
+            'collection_name' => $collection_name,
+            'conversions_disk' => $this->disk_name,
+            'custom_properties' => $request->custom_properties ?? [],
         ]);
 
         Storage::disk($this->disk_name)
